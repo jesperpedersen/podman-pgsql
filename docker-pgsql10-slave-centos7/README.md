@@ -8,7 +8,7 @@ This project contains the PostgreSQL Slave image for Docker.
 su -
 systemctl start docker
 make build
-docker run -p 5433:5432 -e PG_MASTER=172.12.0.2 -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass docker-pgsql10-slave-centos7
+docker run -p 5433:5432 -e PG_MASTER=172.12.0.2 -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_SLOT_NAME=replica1 docker-pgsql10-slave-centos7
 ```
 
 ## Configuration
@@ -18,6 +18,7 @@ docker run -p 5433:5432 -e PG_MASTER=172.12.0.2 -e PG_REPLICATION_NAME=repl -e P
 | PG_MASTER | | | Yes | The IP of the master |
 | PG_REPLICATION_NAME | | | Yes | The replication user |
 | PG_REPLICATION_PASSWORD | | | Yes | The password for the replication user |
+| PG_SLOT_NAME | | | Yes | The replication slot name |
 
 ## SSL support
 

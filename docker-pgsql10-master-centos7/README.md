@@ -28,6 +28,12 @@ docker run -p 5432:5432 -e PG_DATABASE=mydb -e PG_USER_NAME=myuser -e PG_USER_PA
 | PG_MAX_PARALLEL_WORKERS | 8 | | | `max_parallel_workers` setting |
 | PG_EFFECTIVE_CACHE_SIZE | 1 | GB | | `effective_cache_size` setting |
 | PG_MAX_WAL_SIZE | 1 | GB | | `max_wal_size` setting |
+| PG_REPLICA1 | replica1 | | | Replication slot name 1 |
+| PG_REPLICA2 | replica2 | | | Replication slot name 2 |
+| PG_REPLICA3 | replica3 | | | Replication slot name 3 |
+| PG_REPLICA4 | replica4 | | | Replication slot name 4 |
+| PG_REPLICA5 | replica5 | | | Replication slot name 5 |
+| PG_REPLICA6 | replica6 | | | Replication slot name 6 |
 
 ## Volumes
 

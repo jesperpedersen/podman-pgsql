@@ -37,6 +37,13 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     export PG_REPLICATION_PASSWORD=${PG_REPLICATION_PASSWORD}
     export PG_NETWORK_MASK=${PG_NETWORK_MASK}
 
+    export PG_REPLICA1=${PG_REPLICA1:-replica1}
+    export PG_REPLICA2=${PG_REPLICA2:-replica2}
+    export PG_REPLICA3=${PG_REPLICA3:-replica3}
+    export PG_REPLICA4=${PG_REPLICA4:-replica4}
+    export PG_REPLICA5=${PG_REPLICA5:-replica5}
+    export PG_REPLICA6=${PG_REPLICA6:-replica6}
+
     if [ -z "${PG_DATABASE}" ] ||
        [ -z "${PG_USER_NAME}" ] || [ -z "${PG_USER_PASSWORD}" ] ||
        [ -z "${PG_REPLICATION_NAME}" ] || [ -z "${PG_REPLICATION_PASSWORD}" ] ||
@@ -91,6 +98,12 @@ if [ ! -f /pgdata/PG_VERSION ]; then
 
     /usr/pgsql-10/bin/pg_ctl -D /pgdata/ start
     /usr/pgsql-10/bin/psql -q -f /conf/setup.sql postgres
+    /usr/pgsql-10/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA1');" postgres
+    /usr/pgsql-10/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA2');" postgres
+    /usr/pgsql-10/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA3');" postgres
+    /usr/pgsql-10/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA4');" postgres
+    /usr/pgsql-10/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA5');" postgres
+    /usr/pgsql-10/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA6');" postgres
     /usr/bin/pgbackrest --stanza=main stanza-create
     /usr/pgsql-10/bin/pg_ctl -D /pgdata/ stop
 fi
