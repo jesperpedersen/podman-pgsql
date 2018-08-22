@@ -46,7 +46,7 @@ if [ ! -f /pgdata/PG_VERSION ]; then
         sed -i "s/SSL//g" /conf/recovery.conf
     fi
 
-    PGPASSWORD="$PG_REPLICATION_PASSWORD" /usr/pgsql-10/bin/pg_basebackup -S ${PG_SLOT_NAME} -X stream --no-password -c fast -h ${PG_MASTER} -U ${PG_REPLICATION_NAME} -D /pgdata
+    PGPASSWORD="$PG_REPLICATION_PASSWORD" /usr/pgsql-10/bin/pg_basebackup -S ${PG_SLOT_NAME} -X stream --no-password -c fast -h ${PG_MASTER} -U ${PG_REPLICATION_NAME} -D /pgdata --waldir=/pgwal
 
     sed -i "s/PG_MASTER/$PG_MASTER/g" /conf/recovery.conf
     sed -i "s/PG_REPLICATION_NAME/$PG_REPLICATION_NAME/g" /conf/recovery.conf
