@@ -6,9 +6,33 @@ This project contains the PostgreSQL Master image for Docker.
 
 ```bash
 su -
+
+# Start the docker daemon
 systemctl start docker
+
+# Create the docker image
 make build
-docker run -p 5432:5432 -e PG_DATABASE=mydb -e PG_USER_NAME=myuser -e PG_USER_PASSWORD=pass -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_NETWORK_MASK=172.10.0.0\\/16 docker-pgsql10-master-centos7
+
+# Run, and register the container under postgresql-master
+docker run -p 5432:5432 --name postgresql-master -d -e PG_DATABASE=mydb -e PG_USER_NAME=myuser -e PG_USER_PASSWORD=mypass -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_NETWORK_MASK=172.17.0.0\\/16 docker-pgsql10-master-centos7
+
+# psql to postgresql-master
+psql -h localhost -p 5432 -U myuser mydb
+
+# Shell to postgresql-master
+docker exec -it postgresql-master /usr/bin/bash
+
+# Get the IP address of the postgresql-master container
+docker inspect postgresql-master | grep IPAddress
+
+# Stop the container
+docker stop postgresql-master
+
+# Start the container
+docker start postgresql-master
+
+# Remove the container
+docker rm postgresql-master
 ```
 
 ## Configuration
