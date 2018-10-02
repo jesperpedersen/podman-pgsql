@@ -69,14 +69,12 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     if [ -f /pgconf/root.crt ] && [ -f /pgconf/server.crt ] && [ -f /pgconf/server.key ]; then
         sed -i "s/ssl = off/ssl = on/g" /conf/postgresql.conf
         sed -i "s/SSL/ssl/g" /conf/pg_hba.conf
-        sed -i "s/CERT/clientcert=1/g" /conf/pg_hba.conf
 
         cp /pgconf/root.crt /pgdata
         cp /pgconf/server.crt /pgdata
         cp /pgconf/server.key /pgdata
     else
         sed -i "s/SSL//g" /conf/pg_hba.conf
-        sed -i "s/CERT//g" /conf/pg_hba.conf
     fi
 
     cp /conf/postgresql.conf /pgdata/
