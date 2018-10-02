@@ -54,13 +54,6 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     sed -i "s/PG_SLOT_NAME/$PG_SLOT_NAME/g" /conf/recovery.conf
 
     cp /conf/recovery.conf /pgdata/
-
-    (crontab -l ; echo "00 06  *   *   0     /usr/bin/pgbackrest --type=full --stanza=main backup") | crontab -
-    (crontab -l ; echo "00 06  *   *   1-6   /usr/bin/pgbackrest --type=diff --stanza=main backup") | crontab -
-
-    /usr/pgsql-10/bin/pg_ctl -D /pgdata/ start
-    /usr/bin/pgbackrest --stanza=main stanza-create
-    /usr/pgsql-10/bin/pg_ctl -D /pgdata/ stop
 fi
 
 exec /usr/pgsql-10/bin/postgres -D /pgdata/ "$@"
