@@ -8,7 +8,7 @@ The images makes use of
 * [PostgreSQL](https://www.postgresql.org) 10.x
 * Community provided RPMs through [yum.postgresql.org](https://yum.postgresql.org)
 * Checksum for `PGDATA`
-* SCRAM-SHA256 password encryption
+* SCRAM-SHA256 password encryption by default
 * SSL support
 * `pg_stat_statements` integration
 * Asynchronous replication, up to 6 slaves

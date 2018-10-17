@@ -52,6 +52,7 @@ docker rm postgresql-master
 | PG_MAX_PARALLEL_WORKERS | 8 | | | `max_parallel_workers` setting |
 | PG_EFFECTIVE_CACHE_SIZE | 1 | GB | | `effective_cache_size` setting |
 | PG_MAX_WAL_SIZE | 1 | GB | | `max_wal_size` setting |
+| PG_PASSWORD_ENCRYPTION | scram-sha-256 | | | `password_encryption` setting |
 | PG_REPLICA1 | replica1 | | | Replication slot name 1 |
 | PG_REPLICA2 | replica2 | | | Replication slot name 2 |
 | PG_REPLICA3 | replica3 | | | Replication slot name 3 |

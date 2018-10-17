@@ -28,6 +28,7 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     export PG_MAX_PARALLEL_WORKERS=${PG_MAX_PARALLEL_WORKERS:-8}
     export PG_EFFECTIVE_CACHE_SIZE=${PG_EFFECTIVE_CACHE_SIZE:-1}
     export PG_MAX_WAL_SIZE=${PG_MAX_WAL_SIZE:-1}
+    export PG_PASSWORD_ENCRYPTION=${PG_PASSWORD_ENCRYPTION:-scram-sha-256}
 
     export PG_DATABASE=${PG_DATABASE}
     export PG_DATABASE_ENCODING=${PG_DATABASE_ENCODING:-UTF8}
@@ -60,11 +61,13 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     sed -i "s/PG_MAX_PARALLEL_WORKERS/$PG_MAX_PARALLEL_WORKERS/g" /conf/postgresql.conf
     sed -i "s/PG_EFFECTIVE_CACHE_SIZE/$PG_EFFECTIVE_CACHE_SIZE/g" /conf/postgresql.conf
     sed -i "s/PG_MAX_WAL_SIZE/$PG_MAX_WAL_SIZE/g" /conf/postgresql.conf
+    sed -i "s/PG_PASSWORD_ENCRYPTION/$PG_PASSWORD_ENCRYPTION/g" /conf/postgresql.conf
 
     sed -i "s/PG_DATABASE/$PG_DATABASE/g" /conf/pg_hba.conf
     sed -i "s/PG_USER_NAME/$PG_USER_NAME/g" /conf/pg_hba.conf
     sed -i "s/PG_REPLICATION_NAME/$PG_REPLICATION_NAME/g" /conf/pg_hba.conf
     sed -i "s/PG_NETWORK_MASK/$PG_NETWORK_MASK/g" /conf/pg_hba.conf
+    sed -i "s/PG_PASSWORD_ENCRYPTION/$PG_PASSWORD_ENCRYPTION/g" /conf/pg_hba.conf
 
     if [ -f /pgconf/root.crt ] && [ -f /pgconf/server.crt ] && [ -f /pgconf/server.key ]; then
         sed -i "s/ssl = off/ssl = on/g" /conf/postgresql.conf
