@@ -67,7 +67,6 @@ docker rm postgresql-primary
 | `/pgconf` | Volume for SSL configuration |
 | `/pgdata` | PostgreSQL data directory |
 | `/pgwal` | PostgreSQL Write-Ahead Log (WAL) |
-| `/pgbackup` | PostgreSQL backup volume |
 
 ## SSL support
 

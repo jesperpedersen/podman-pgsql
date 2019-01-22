@@ -35,20 +35,17 @@ ENV PGROOT="/usr/pgsql-${PGVERSION}"
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
  && rpm -Uvh https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm \
  && yum -y update \
- && yum -y install postgresql11 postgresql11-server postgresql11-contrib postgresql11-libs pgbackrest crontabs \
+ && yum -y install postgresql11 postgresql11-server postgresql11-contrib postgresql11-libs \
  && yum -y clean all
 
 COPY root/ /
 
-RUN mkdir -p /conf /pgconf /pgdata /pgwal /pgbackup
+RUN mkdir -p /conf /pgconf /pgdata /pgwal
 COPY conf/* /conf/
-RUN chown -R postgres:postgres /conf /pgconf /pgdata /pgwal /pgbackup
-RUN chmod 700 /conf /pgconf /pgdata /pgwal /pgbackup
+RUN chown -R postgres:postgres /conf /pgconf /pgdata /pgwal
+RUN chmod 700 /conf /pgconf /pgdata /pgwal
 
-COPY conf/pgbackrest.conf /etc/
-RUN chown -R postgres:postgres /var/log/pgbackrest
-
-VOLUME ["/pgconf", "/pgdata", "/pgwal", "/pgbackup"]
+VOLUME ["/pgconf", "/pgdata", "/pgwal"]
 
 EXPOSE 5432
 

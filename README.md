@@ -12,13 +12,13 @@ The images makes use of
 * SSL support
 * `pg_stat_statements` integration
 * Asynchronous replication, up to 6 slaves
-* Backup using [pgbackrest](https://pgbackrest.org) including Point-in-Time recovery
-* Volumes for `/pgconf`, `/pgdata`, `/pgwal` and `/pgbackup`
+* Volumes for `/pgconf`, `/pgdata`, and `/pgwal`
 
 Features that should be added
 
 * Synchronous replication with `remote_apply`
 * Additional GUCs
+* [barman image](https://www.pgbarman.org/)
 * [pgpool-II 4.0 image](http://www.pgpool.net)
 
 Images are provided **`AS IS`** according to the license agreement with
