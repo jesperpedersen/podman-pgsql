@@ -1,6 +1,6 @@
-# Docker / PostgreSQL Slave
+# Docker / PostgreSQL Replica
 
-This project contains the PostgreSQL Slave image for Docker.
+This project contains the PostgreSQL Replica image for Docker.
 
 ## Getting Started
 
@@ -13,23 +13,23 @@ systemctl start docker
 # Create the docker image
 make build
 
-# Run, and register the container under postgresql-slave
-docker run -p 5433:5432 --name postgresql-slave -d -e PG_MASTER=172.17.0.2 -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_SLOT_NAME=replica1 docker-pgsql10-slave-centos7
+# Run, and register the container under postgresql-replica
+docker run -p 5433:5432 --name postgresql-replica -d -e PG_MASTER=172.17.0.2 -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_SLOT_NAME=replica1 docker-pgsql11-replica-centos7
 
-# psql to postgresql-slave
+# psql to postgresql-replica
 psql -h localhost -p 5433 -U myuser -c 'SELECT pg_is_in_recovery();' mydb
 
-# Shell to postgresql-slave
-docker exec -it postgresql-slave /usr/bin/bash
+# Shell to postgresql-replica
+docker exec -it postgresql-replica /usr/bin/bash
 
 # Stop the container
-docker stop postgresql-slave
+docker stop postgresql-replica
 
 # Start the container
-docker start postgresql-slave
+docker start postgresql-replica
 
 # Remove the container
-docker rm postgresql-slave
+docker rm postgresql-replica
 ```
 
 ## Configuration

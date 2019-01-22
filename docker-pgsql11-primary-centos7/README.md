@@ -1,6 +1,6 @@
-# Docker / PostgreSQL Master
+# Docker / PostgreSQL Primary
 
-This project contains the PostgreSQL Master image for Docker.
+This project contains the PostgreSQL Primary image for Docker.
 
 ## Getting Started
 
@@ -13,26 +13,26 @@ systemctl start docker
 # Create the docker image
 make build
 
-# Run, and register the container under postgresql-master
-docker run -p 5432:5432 --name postgresql-master -d -e PG_DATABASE=mydb -e PG_USER_NAME=myuser -e PG_USER_PASSWORD=mypass -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_NETWORK_MASK=172.17.0.0\\/16 docker-pgsql10-master-centos7
+# Run, and register the container under postgresql-primary
+docker run -p 5432:5432 --name postgresql-primary -d -e PG_DATABASE=mydb -e PG_USER_NAME=myuser -e PG_USER_PASSWORD=mypass -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_NETWORK_MASK=172.17.0.0\\/16 docker-pgsql11-primary-centos7
 
-# psql to postgresql-master
+# psql to postgresql-primary
 psql -h localhost -p 5432 -U myuser mydb
 
-# Shell to postgresql-master
-docker exec -it postgresql-master /usr/bin/bash
+# Shell to postgresql-primary
+docker exec -it postgresql-primary /usr/bin/bash
 
-# Get the IP address of the postgresql-master container
-docker inspect postgresql-master | grep IPAddress
+# Get the IP address of the postgresql-primary container
+docker inspect postgresql-primary | grep IPAddress
 
 # Stop the container
-docker stop postgresql-master
+docker stop postgresql-primary
 
 # Start the container
-docker start postgresql-master
+docker start postgresql-primary
 
 # Remove the container
-docker rm postgresql-master
+docker rm postgresql-primary
 ```
 
 ## Configuration

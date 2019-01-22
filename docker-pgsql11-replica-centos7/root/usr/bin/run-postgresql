@@ -1,7 +1,7 @@
 #!/bin/bash
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 Jesper Pedersen <jesper.pedersen@redhat.com>
+# Copyright (c) 2019 Jesper Pedersen <jesper.pedersen@redhat.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the "Software"),
@@ -46,7 +46,7 @@ if [ ! -f /pgdata/PG_VERSION ]; then
         sed -i "s/SSL//g" /conf/recovery.conf
     fi
 
-    PGPASSWORD="$PG_REPLICATION_PASSWORD" /usr/pgsql-10/bin/pg_basebackup -S ${PG_SLOT_NAME} -X stream --no-password -c fast -h ${PG_MASTER} -U ${PG_REPLICATION_NAME} -D /pgdata --waldir=/pgwal
+    PGPASSWORD="$PG_REPLICATION_PASSWORD" /usr/pgsql-11/bin/pg_basebackup -S ${PG_SLOT_NAME} -X stream --no-password -c fast -h ${PG_MASTER} -U ${PG_REPLICATION_NAME} -D /pgdata --waldir=/pgwal
 
     sed -i "s/PG_MASTER/$PG_MASTER/g" /conf/recovery.conf
     sed -i "s/PG_REPLICATION_NAME/$PG_REPLICATION_NAME/g" /conf/recovery.conf
@@ -56,4 +56,4 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     cp /conf/recovery.conf /pgdata/
 fi
 
-exec /usr/pgsql-10/bin/postgres -D /pgdata/ "$@"
+exec /usr/pgsql-11/bin/postgres -D /pgdata/ "$@"

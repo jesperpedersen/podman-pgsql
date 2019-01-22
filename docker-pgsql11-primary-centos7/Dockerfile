@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 Jesper Pedersen <jesper.pedersen@redhat.com>
+# Copyright (c) 2019 Jesper Pedersen <jesper.pedersen@redhat.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the "Software"),
@@ -19,23 +19,23 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# docker-pgsql10-master-centos7
+# docker-pgsql11-primary-centos7
 FROM centos:centos7
 
 LABEL maintainer="Jesper Pedersen <jesper.pedersen@redhat.com>"
 
-LABEL summary="PostgreSQL 10 Master" \
-      description="PostgreSQL 10 Master"
+LABEL summary="PostgreSQL 11 Primary" \
+      description="PostgreSQL 11 Primary"
 
 # COPY conf/licenses /licenses
 
-ENV PGVERSION="10"
+ENV PGVERSION="11"
 ENV PGROOT="/usr/pgsql-${PGVERSION}"
 
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
- && rpm -Uvh https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm \
+ && rpm -Uvh https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm \
  && yum -y update \
- && yum -y install postgresql10 postgresql10-server postgresql10-contrib postgresql10-libs pgbackrest crontabs \
+ && yum -y install postgresql11 postgresql11-server postgresql11-contrib postgresql11-libs pgbackrest crontabs \
  && yum -y clean all
 
 COPY root/ /

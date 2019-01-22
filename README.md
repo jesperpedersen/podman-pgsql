@@ -5,7 +5,7 @@ This repository contains [PostgreSQL](https://www.postgresql.org) images for [Do
 The images makes use of
 
 * [CentOS](https://www.centos.org) 7
-* [PostgreSQL](https://www.postgresql.org) 10.x
+* [PostgreSQL](https://www.postgresql.org) 11.x
 * Community provided RPMs through [yum.postgresql.org](https://yum.postgresql.org)
 * Checksum for `PGDATA`
 * SCRAM-SHA256 password encryption by default
