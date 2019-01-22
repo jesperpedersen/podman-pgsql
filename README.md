@@ -2,6 +2,8 @@
 
 This repository contains [PostgreSQL](https://www.postgresql.org) images for [Docker](https://hub.docker.com/).
 
+**DEPRECATED, Only images on `master` branch are maintained**
+
 The images makes use of
 
 * [CentOS](https://www.centos.org) 7
