@@ -1,0 +1,53 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2019 Jesper Pedersen <jesper.pedersen@redhat.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# docker-pgsql11-barman-centos7
+FROM centos:centos7
+
+LABEL maintainer="Jesper Pedersen <jesper.pedersen@redhat.com>"
+
+LABEL summary="PostgreSQL 11 Barman" \
+      description="PostgreSQL 11 Barman"
+
+# COPY conf/licenses /licenses
+
+ENV PGVERSION="11"
+ENV PGROOT="/usr/pgsql-${PGVERSION}"
+
+RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+ && rpm -Uvh https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm \
+ && yum -y update \
+ && yum -y install postgresql11 postgresql11-libs barman crontabs \
+ && yum -y clean all
+
+COPY root/ /
+
+RUN mkdir -p /conf /pgconf /pgbackup
+COPY conf/* /conf/
+RUN chown barman:barman /etc/barman.conf
+RUN chown -R barman:barman /conf /pgconf /pgbackup
+RUN chmod 700 /conf /pgconf /pgbackup
+
+VOLUME ["/pgconf", "/pgbackup"]
+
+USER barman
+
+CMD ["/usr/bin/run-barman"]

@@ -58,7 +58,6 @@ docker rm postgresql-primary
 | PG_REPLICA3 | replica3 | | | Replication slot name 3 |
 | PG_REPLICA4 | replica4 | | | Replication slot name 4 |
 | PG_REPLICA5 | replica5 | | | Replication slot name 5 |
-| PG_REPLICA6 | replica6 | | | Replication slot name 6 |
 
 ## Volumes
 

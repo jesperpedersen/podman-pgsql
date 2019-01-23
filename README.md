@@ -11,14 +11,14 @@ The images makes use of
 * SCRAM-SHA256 password encryption by default
 * SSL support
 * `pg_stat_statements` integration
-* Asynchronous replication, up to 6 slaves
-* Volumes for `/pgconf`, `/pgdata`, and `/pgwal`
+* Backup using [barman](https://www.pgbarman.org/)
+* Asynchronous replication, up to 5 slaves
+* Volumes for `/pgconf`, `/pgdata`, `/pgwal` and `/pgbackup`.
 
 Features that should be added
 
 * Synchronous replication with `remote_apply`
 * Additional GUCs
-* [barman image](https://www.pgbarman.org/)
 * [pgpool-II 4.0 image](http://www.pgpool.net)
 
 Images are provided **`AS IS`** according to the license agreement with

@@ -43,7 +43,6 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     export PG_REPLICA3=${PG_REPLICA3:-replica3}
     export PG_REPLICA4=${PG_REPLICA4:-replica4}
     export PG_REPLICA5=${PG_REPLICA5:-replica5}
-    export PG_REPLICA6=${PG_REPLICA6:-replica6}
 
     if [ -z "${PG_DATABASE}" ] ||
        [ -z "${PG_USER_NAME}" ] || [ -z "${PG_USER_PASSWORD}" ] ||
@@ -101,7 +100,7 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     /usr/pgsql-11/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA3');" postgres
     /usr/pgsql-11/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA4');" postgres
     /usr/pgsql-11/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA5');" postgres
-    /usr/pgsql-11/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA6');" postgres
+    /usr/pgsql-11/bin/psql -q -c "SELECT pg_create_physical_replication_slot('barman');" postgres
     /usr/pgsql-11/bin/pg_ctl -D /pgdata/ stop
 fi
 
