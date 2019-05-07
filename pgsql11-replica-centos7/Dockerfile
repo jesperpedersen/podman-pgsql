@@ -19,8 +19,36 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-IMAGE_NAME = docker-pgsql11-replica-centos7
+# pgsql11-replica-centos7
+FROM centos:centos7
 
-.PHONY: build
-build:
-	docker build --no-cache -t $(IMAGE_NAME) .
+LABEL maintainer="Jesper Pedersen <jesper.pedersen@redhat.com>"
+
+LABEL summary="PostgreSQL 11 Replica" \
+      description="PostgreSQL 11 Replica"
+
+# COPY conf/licenses /licenses
+
+ENV PGVERSION="11"
+ENV PGROOT="/usr/pgsql-${PGVERSION}"
+
+RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+ && rpm -Uvh https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm \
+ && yum -y update \
+ && yum -y install postgresql11 postgresql11-server postgresql11-contrib postgresql11-libs \
+ && yum -y clean all
+
+COPY root/ /
+
+RUN mkdir -p /conf /pgconf /pgdata /pgwal
+COPY conf/* /conf/
+RUN chown -R postgres:postgres /conf /pgconf /pgdata /pgwal
+RUN chmod 700 /conf /pgconf /pgdata /pgwal
+
+VOLUME ["/pgconf", "/pgdata", "/pgwal"]
+
+EXPOSE 5432
+
+USER 26
+
+CMD ["/usr/bin/run-postgresql"]

@@ -1,32 +1,27 @@
-# Docker / PostgreSQL Barman
+# PostgreSQL Barman
 
-This project contains the PostgreSQL Barman image for Docker.
+This project contains the PostgreSQL Barman image.
 
 ## Getting Started
 
 ```bash
-su -
-
-# Start the docker daemon
-systemctl start docker
-
-# Create the docker image
+# Create the image
 make build
 
 # Run, and register the container under postgresql-barman
-docker run --name postgresql-barman -d -e PG_MASTER=172.17.0.2 -e PG_DATABASE=mydb -e PG_REPLICATION_PASSWORD=replpass docker-pgsql11-barman-centos7
+podman run --name postgresql-barman -d -e PG_MASTER=192.168.1.2 -e PG_DATABASE=mydb -e PG_REPLICATION_PASSWORD=replpass pgsql11-barman-centos7
 
 # Shell to postgresql-barman
-docker exec -it postgresql-barman /usr/bin/bash
+podman exec -it postgresql-barman /usr/bin/bash
 
 # Stop the container
-docker stop postgresql-barman
+podman stop postgresql-barman
 
 # Start the container
-docker start postgresql-barman
+podman start postgresql-barman
 
 # Remove the container
-docker rm postgresql-barman
+podman rm postgresql-barman
 ```
 
 ## Configuration

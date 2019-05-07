@@ -19,35 +19,8 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# docker-pgsql11-barman-centos7
-FROM centos:centos7
+IMAGE_NAME = pgsql11-replica-centos7
 
-LABEL maintainer="Jesper Pedersen <jesper.pedersen@redhat.com>"
-
-LABEL summary="PostgreSQL 11 Barman" \
-      description="PostgreSQL 11 Barman"
-
-# COPY conf/licenses /licenses
-
-ENV PGVERSION="11"
-ENV PGROOT="/usr/pgsql-${PGVERSION}"
-
-RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
- && rpm -Uvh https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm \
- && yum -y update \
- && yum -y install postgresql11 postgresql11-libs barman crontabs \
- && yum -y clean all
-
-COPY root/ /
-
-RUN mkdir -p /conf /pgconf /pgbackup
-COPY conf/* /conf/
-RUN chown barman:barman /etc/barman.conf
-RUN chown -R barman:barman /conf /pgconf /pgbackup
-RUN chmod 700 /conf /pgconf /pgbackup
-
-VOLUME ["/pgconf", "/pgbackup"]
-
-USER barman
-
-CMD ["/usr/bin/run-barman"]
+.PHONY: build
+build:
+	podman build --no-cache -t $(IMAGE_NAME) .

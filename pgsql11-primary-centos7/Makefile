@@ -19,8 +19,8 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-IMAGE_NAME = docker-pgsql11-primary-centos7
+IMAGE_NAME = pgsql11-primary-centos7
 
 .PHONY: build
 build:
-	docker build --no-cache -t $(IMAGE_NAME) .
+	podman build --no-cache -t $(IMAGE_NAME) .

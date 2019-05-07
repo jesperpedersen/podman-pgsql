@@ -1,7 +1,7 @@
-# Docker / PostgreSQL
+# PostgreSQL
 
-This repository contains [PostgreSQL](https://www.postgresql.org) images for [Docker](https://hub.docker.com/).
-Alternative, [Podman](PODMAN.md) can be used.
+This repository contains [PostgreSQL](https://www.postgresql.org) images for [podman](https://podman.io/).
+[podman](https://podman.io/) 1.2+ is required.
 
 The images makes use of
 
