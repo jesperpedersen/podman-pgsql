@@ -34,6 +34,7 @@ ENV PGROOT="/usr/pgsql-${PGVERSION}"
 
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
  && rpm -Uvh https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm \
+ && yum -y install wget tar \
  && yum -y update \
  && yum -y install postgresql11 postgresql11-server postgresql11-contrib postgresql11-libs \
  && yum -y clean all
@@ -45,9 +46,18 @@ COPY conf/* /conf/
 RUN chown -R postgres:postgres /conf /pgconf /pgdata /pgwal
 RUN chmod 700 /conf /pgconf /pgdata /pgwal
 
+RUN mkdir -p /usr/local/bin
+RUN cd /tmp \
+ && wget https://github.com/prometheus/node_exporter/releases/download/v0.18.0/node_exporter-0.18.0.linux-amd64.tar.gz \
+ && tar xzf node_exporter-0.18.0.linux-amd64.tar.gz \
+ && mv node_exporter-0.18.0.linux-amd64/node_exporter /usr/local/bin/node_exporter \
+ && rm -Rf node_exporter-0.18.0.linux-amd64 node_exporter-0.18.0.linux-amd64.tar.gz \
+ && chown postgres:postgres /usr/local/bin/node_exporter
+
 VOLUME ["/pgconf", "/pgdata", "/pgwal"]
 
 EXPOSE 5432
+EXPOSE 9100
 
 USER 26
 

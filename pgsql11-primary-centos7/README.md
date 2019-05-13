@@ -9,7 +9,7 @@ This project contains the PostgreSQL Primary image.
 make build
 
 # Run, and register the container under postgresql-primary
-podman run -p 5432:5432 --name postgresql-primary -d -e PG_DATABASE=mydb -e PG_USER_NAME=myuser -e PG_USER_PASSWORD=mypass -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_NETWORK_MASK=all pgsql11-primary-centos7
+podman run -p 5432:5432 -p 9100:9100 --name postgresql-primary -d -e PG_DATABASE=mydb -e PG_USER_NAME=myuser -e PG_USER_PASSWORD=mypass -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_NETWORK_MASK=all pgsql11-primary-centos7
 
 # psql to postgresql-primary
 psql -h localhost -p 5432 -U myuser mydb

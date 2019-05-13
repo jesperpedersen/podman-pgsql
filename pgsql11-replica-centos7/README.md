@@ -9,7 +9,7 @@ This project contains the PostgreSQL Replica image.
 make build
 
 # Run, and register the container under postgresql-replica
-podman run -p 5433:5432 --name postgresql-replica -d -e PG_MASTER=192.168.1.2 -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_SLOT_NAME=replica1 pgsql11-replica-centos7
+podman run -p 5433:5432 -p 9101:9100 --name postgresql-replica -d -e PG_MASTER=192.168.1.2 -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_SLOT_NAME=replica1 pgsql11-replica-centos7
 
 # psql to postgresql-replica
 psql -h localhost -p 5433 -U myuser -c 'SELECT pg_is_in_recovery();' mydb

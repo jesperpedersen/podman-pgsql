@@ -21,6 +21,14 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+NODE_EXPORTER_PIDFILE=/tmp/node_exporter.pid
+
+function trap_sigterm() {
+    kill -SIGINT $(head -1 $NODE_EXPORTER_PIDFILE)
+}
+
+trap 'trap_sigterm' SIGINT SIGTERM
+
 if [ ! -f /pgdata/PG_VERSION ]; then
     export PG_MAX_CONNECTIONS=${PG_MAX_CONNECTIONS:-100}
     export PG_SHARED_BUFFERS=${PG_SHARED_BUFFERS:-256}
@@ -103,5 +111,8 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     /usr/pgsql-11/bin/psql -q -c "SELECT pg_create_physical_replication_slot('barman');" postgres
     /usr/pgsql-11/bin/pg_ctl -D /pgdata/ stop
 fi
+
+/usr/local/bin/node_exporter >> /tmp/node_exporter.log 2>&1 &
+echo $! > $NODE_EXPORTER_PIDFILE
 
 exec /usr/pgsql-11/bin/postgres -D /pgdata/ "$@"
