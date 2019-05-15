@@ -52,6 +52,9 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     export PG_REPLICA4=${PG_REPLICA4:-replica4}
     export PG_REPLICA5=${PG_REPLICA5:-replica5}
 
+    export PG_MONITOR_NAME=${PG_MONITOR_NAME}
+    export PG_MONITOR_PASSWORD=${PG_MONITOR_PASSWORD}
+
     if [ -z "${PG_DATABASE}" ] ||
        [ -z "${PG_USER_NAME}" ] || [ -z "${PG_USER_PASSWORD}" ] ||
        [ -z "${PG_REPLICATION_NAME}" ] || [ -z "${PG_REPLICATION_PASSWORD}" ] ||
@@ -80,11 +83,19 @@ if [ ! -f /pgdata/PG_VERSION ]; then
         sed -i "s/ssl = off/ssl = on/g" /conf/postgresql.conf
         sed -i "s/SSL/ssl/g" /conf/pg_hba.conf
 
+        if [ -n "${PG_MONITOR_NAME}" ] && [ -n "${PG_MONITOR_PASSWORD}" ]; then
+            echo "hostssl all $PG_MONITOR_NAME $PG_NETWORK_MASK $PG_PASSWORD_ENCRYPTION" >> /conf/pg_hba.conf
+        fi
+
         cp /pgconf/root.crt /pgdata
         cp /pgconf/server.crt /pgdata
         cp /pgconf/server.key /pgdata
     else
         sed -i "s/SSL//g" /conf/pg_hba.conf
+
+        if [ -n "${PG_MONITOR_NAME}" ] && [ -n "${PG_MONITOR_PASSWORD}" ]; then
+            echo "host all $PG_MONITOR_NAME $PG_NETWORK_MASK $PG_PASSWORD_ENCRYPTION" >> /conf/pg_hba.conf
+        fi
     fi
 
     cp /conf/postgresql.conf /pgdata/
@@ -101,8 +112,18 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     sed -i "s/PG_REPLICATION_NAME/$PG_REPLICATION_NAME/g" /conf/setup.sql
     sed -i "s/PG_REPLICATION_PASSWORD/$PG_REPLICATION_PASSWORD/g" /conf/setup.sql
 
+    if [ -n "${PG_MONITOR_NAME}" ] && [ -n "${PG_MONITOR_PASSWORD}" ]; then
+        sed -i "s/PG_MONITOR_NAME/$PG_MONITOR_NAME/g" /conf/setup_monitor.sql
+        sed -i "s/PG_MONITOR_PASSWORD/$PG_MONITOR_PASSWORD/g" /conf/setup_monitor.sql
+    fi
+
     /usr/pgsql-11/bin/pg_ctl -D /pgdata/ start
     /usr/pgsql-11/bin/psql -q -f /conf/setup.sql postgres
+
+    if [ -n "${PG_MONITOR_NAME}" ] && [ -n "${PG_MONITOR_PASSWORD}" ]; then
+        /usr/pgsql-11/bin/psql -q -f /conf/setup_monitor.sql postgres
+    fi
+
     /usr/pgsql-11/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA1');" postgres
     /usr/pgsql-11/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA2');" postgres
     /usr/pgsql-11/bin/psql -q -c "SELECT pg_create_physical_replication_slot('$PG_REPLICA3');" postgres

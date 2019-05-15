@@ -1,0 +1,55 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2019 Jesper Pedersen <jesper.pedersen@redhat.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# pgsql11-pgexporter-centos7
+FROM centos:centos7
+
+LABEL maintainer="Jesper Pedersen <jesper.pedersen@redhat.com>"
+
+LABEL summary="PostgreSQL 11 postgres_exporter" \
+      description="PostgreSQL 11 postgres_exporter"
+
+# COPY conf/licenses /licenses
+
+ENV PGVERSION="11"
+ENV PGROOT="/usr/pgsql-${PGVERSION}"
+
+RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+ && rpm -Uvh https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm \
+ && yum -y install wget tar \
+ && yum -y update \
+ && yum -y clean all
+
+COPY root/ /
+
+RUN mkdir -p /usr/local/bin
+RUN cd /tmp \
+ && wget https://github.com/wrouesnel/postgres_exporter/releases/download/v0.4.7/postgres_exporter_v0.4.7_linux-amd64.tar.gz \
+ && tar xzf postgres_exporter_v0.4.7_linux-amd64.tar.gz \
+ && mv postgres_exporter_v0.4.7_linux-amd64/postgres_exporter /usr/local/bin/postgres_exporter \
+ && rm -Rf postgres_exporter_v0.4.7_linux-amd64 postgres_exporter_v0.4.7_linux-amd64.tar.gz \
+ && chown daemon:daemon /usr/local/bin/postgres_exporter
+
+EXPOSE 9187
+
+USER 2
+
+CMD ["/usr/bin/run-pgexporter"]
