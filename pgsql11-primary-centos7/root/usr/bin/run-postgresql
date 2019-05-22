@@ -84,7 +84,7 @@ if [ ! -f /pgdata/PG_VERSION ]; then
         sed -i "s/SSL/ssl/g" /conf/pg_hba.conf
 
         if [ -n "${PG_MONITOR_NAME}" ] && [ -n "${PG_MONITOR_PASSWORD}" ]; then
-            echo "hostssl all $PG_MONITOR_NAME $PG_NETWORK_MASK $PG_PASSWORD_ENCRYPTION" >> /conf/pg_hba.conf
+            echo "hostssl all $PG_MONITOR_NAME $PG_NETWORK_MASK md5" >> /conf/pg_hba.conf
         fi
 
         cp /pgconf/root.crt /pgdata
@@ -94,7 +94,7 @@ if [ ! -f /pgdata/PG_VERSION ]; then
         sed -i "s/SSL//g" /conf/pg_hba.conf
 
         if [ -n "${PG_MONITOR_NAME}" ] && [ -n "${PG_MONITOR_PASSWORD}" ]; then
-            echo "host all $PG_MONITOR_NAME $PG_NETWORK_MASK $PG_PASSWORD_ENCRYPTION" >> /conf/pg_hba.conf
+            echo "host all $PG_MONITOR_NAME $PG_NETWORK_MASK md5" >> /conf/pg_hba.conf
         fi
     fi
 
