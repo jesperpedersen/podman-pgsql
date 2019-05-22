@@ -13,6 +13,8 @@ The images makes use of
 * SSL support
 * `pg_stat_statements` integration
 * Backup using [barman](https://www.pgbarman.org/)
+* Administration with [pgadmin4](https://www.pgadmin.org/)
+* Monitoring with [Grafana](https://grafana.com/), [Prometheus](https://prometheus.io/) and [TimescaleDB](https://www.timescale.com/)
 * Asynchronous replication, up to 5 slaves
 * Volumes for `/pgconf`, `/pgdata`, `/pgwal` and `/pgbackup`.
 

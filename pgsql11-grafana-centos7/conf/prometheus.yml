@@ -1,0 +1,10 @@
+global:
+ scrape_interval: 10s
+scrape_configs:
+ - job_name: prometheus
+   static_configs:
+   - targets: [WATCH_LIST]
+remote_write:
+ - url: "http://localhost:9201/write"
+remote_read:
+ - url: "http://localhost:9201/read"

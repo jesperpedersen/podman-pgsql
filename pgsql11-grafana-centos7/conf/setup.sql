@@ -1,0 +1,12 @@
+CREATE ROLE PG_USER_NAME WITH LOGIN PASSWORD 'PG_USER_PASSWORD';
+CREATE DATABASE prometheus WITH OWNER PG_USER_NAME TEMPLATE template0 ENCODING UTF8;
+CREATE DATABASE grafana WITH OWNER PG_USER_NAME TEMPLATE template0 ENCODING UTF8;
+
+\c prometheus
+CREATE EXTENSION pg_stat_statements;
+CREATE EXTENSION timescaledb;
+CREATE EXTENSION pg_prometheus;
+GRANT ALL ON SCHEMA prometheus TO PG_USER_NAME;
+
+\c prometheus PG_USER_NAME
+SELECT create_prometheus_table('metrics', use_timescaledb => true);
