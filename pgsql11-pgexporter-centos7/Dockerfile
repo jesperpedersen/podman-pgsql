@@ -42,10 +42,10 @@ COPY root/ /
 
 RUN mkdir -p /usr/local/bin
 RUN cd /tmp \
- && wget https://github.com/wrouesnel/postgres_exporter/releases/download/v0.4.7/postgres_exporter_v0.4.7_linux-amd64.tar.gz \
- && tar xzf postgres_exporter_v0.4.7_linux-amd64.tar.gz \
- && mv postgres_exporter_v0.4.7_linux-amd64/postgres_exporter /usr/local/bin/postgres_exporter \
- && rm -Rf postgres_exporter_v0.4.7_linux-amd64 postgres_exporter_v0.4.7_linux-amd64.tar.gz \
+ && wget https://github.com/wrouesnel/postgres_exporter/releases/download/v0.7.0/postgres_exporter_v0.7.0_linux-amd64.tar.gz \
+ && tar xzf postgres_exporter_v0.7.0_linux-amd64.tar.gz \
+ && mv postgres_exporter_v0.7.0_linux-amd64/postgres_exporter /usr/local/bin/postgres_exporter \
+ && rm -Rf postgres_exporter_v0.7.0_linux-amd64 postgres_exporter_v0.7.0_linux-amd64.tar.gz \
  && chown daemon:daemon /usr/local/bin/postgres_exporter
 
 EXPOSE 9187
