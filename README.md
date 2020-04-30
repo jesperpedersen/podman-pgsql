@@ -5,13 +5,14 @@ This repository contains [PostgreSQL](https://www.postgresql.org) images for [po
 
 The images makes use of
 
-* [CentOS](https://www.centos.org) 7
-* [PostgreSQL](https://www.postgresql.org) 11.x
+* [CentOS](https://www.centos.org) 8
+* [PostgreSQL](https://www.postgresql.org) 12.x
 * Community provided RPMs through [yum.postgresql.org](https://yum.postgresql.org)
 * Checksum for `PGDATA`
 * SCRAM-SHA256 password encryption by default
 * SSL support
 * `pg_stat_statements` integration
+* Pooling using [pgagroal](https://agroal.github.io/pgagroal/)
 * Backup using [barman](https://www.pgbarman.org/)
 * Administration with [pgadmin4](https://www.pgadmin.org/)
 * Monitoring with [Grafana](https://grafana.com/), [Prometheus](https://prometheus.io/) and [TimescaleDB](https://www.timescale.com/)
@@ -22,7 +23,6 @@ Features that should be added
 
 * Synchronous replication with `remote_apply`
 * Additional GUCs
-* [pgpool-II 4.0 image](http://www.pgpool.net)
 
 Images are provided **`AS IS`** according to the license agreement with
 no guarantees of correctness and stability.

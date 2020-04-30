@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2019 Jesper Pedersen <jesper.pedersen@redhat.com>
+# Copyright (c) 2020 Jesper Pedersen <jesper.pedersen@redhat.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the "Software"),
@@ -19,25 +19,25 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# pgsql11-primary-centos7
-FROM centos:centos7
+# pgsql12-primary-centos8
+FROM centos:centos8
 
 LABEL maintainer="Jesper Pedersen <jesper.pedersen@redhat.com>"
 
-LABEL summary="PostgreSQL 11 Primary" \
-      description="PostgreSQL 11 Primary"
+LABEL summary="PostgreSQL 12 Primary" \
+      description="PostgreSQL 12 Primary"
 
 # COPY conf/licenses /licenses
 
-ENV PGVERSION="11"
+ENV PGVERSION="12"
 ENV PGROOT="/usr/pgsql-${PGVERSION}"
 
-RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
- && rpm -Uvh https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm \
- && yum -y install wget tar \
- && yum -y update \
- && yum -y install postgresql11 postgresql11-server postgresql11-contrib postgresql11-libs \
- && yum -y clean all
+RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
+ && rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
+ && dnf -y update \
+ && dnf -y module disable postgresql \
+ && dnf -y install postgresql12 postgresql12-server postgresql12-contrib postgresql12-libs \
+ && dnf -y clean all
 
 COPY root/ /
 
@@ -48,10 +48,10 @@ RUN chmod 700 /conf /pgconf /pgdata /pgwal
 
 RUN mkdir -p /usr/local/bin
 RUN cd /tmp \
- && wget https://github.com/prometheus/node_exporter/releases/download/v0.18.0/node_exporter-0.18.0.linux-amd64.tar.gz \
- && tar xzf node_exporter-0.18.0.linux-amd64.tar.gz \
- && mv node_exporter-0.18.0.linux-amd64/node_exporter /usr/local/bin/node_exporter \
- && rm -Rf node_exporter-0.18.0.linux-amd64 node_exporter-0.18.0.linux-amd64.tar.gz \
+ && wget https://github.com/prometheus/node_exporter/releases/download/v1.0.0-rc.0/node_exporter-1.0.0-rc.0.linux-amd64.tar.gz \
+ && tar xzf node_exporter-1.0.0-rc.0.linux-amd64.tar.gz \
+ && mv node_exporter-1.0.0-rc.0.linux-amd64/node_exporter /usr/local/bin/node_exporter \
+ && rm -Rf node_exporter-1.0.0-rc.0.linux-amd64 node_exporter-1.0.0-rc.0.linux-amd64.tar.gz \
  && chown postgres:postgres /usr/local/bin/node_exporter
 
 VOLUME ["/pgconf", "/pgdata", "/pgwal"]
