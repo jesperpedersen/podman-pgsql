@@ -19,13 +19,13 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# pgsql12-replica-centos8
+# pgsql12-barman-centos8
 FROM centos:centos8
 
 LABEL maintainer="Jesper Pedersen <jesper.pedersen@redhat.com>"
 
-LABEL summary="PostgreSQL 12 Replica" \
-      description="PostgreSQL 12 Replica"
+LABEL summary="PostgreSQL 12 Barman" \
+      description="PostgreSQL 12 Barman"
 
 # COPY conf/licenses /licenses
 
@@ -36,16 +36,17 @@ RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.
  && rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
  && dnf -y update \
  && dnf -y module disable postgresql \
- && dnf -y install wget \
- && dnf -y install postgresql12 postgresql12-server postgresql12-contrib postgresql12-libs \
+ && dnf -y install wget tar \
+ && dnf -y install postgresql12 postgresql12-libs barman crontabs \
  && dnf -y clean all
 
 COPY root/ /
 
-RUN mkdir -p /conf /pgconf /pgdata /pgwal
+RUN mkdir -p /conf /pgconf /pgbackup
 COPY conf/* /conf/
-RUN chown -R postgres:postgres /conf /pgconf /pgdata /pgwal
-RUN chmod 700 /conf /pgconf /pgdata /pgwal
+RUN chown barman:barman /etc/barman.conf
+RUN chown -R barman:barman /conf /pgconf /pgbackup
+RUN chmod 700 /conf /pgconf /pgbackup
 
 RUN mkdir -p /usr/local/bin
 RUN cd /tmp \
@@ -53,13 +54,10 @@ RUN cd /tmp \
  && tar xzf node_exporter-1.0.0-rc.0.linux-amd64.tar.gz \
  && mv node_exporter-1.0.0-rc.0.linux-amd64/node_exporter /usr/local/bin/node_exporter \
  && rm -Rf node_exporter-1.0.0-rc.0.linux-amd64 node_exporter-1.0.0-rc.0.linux-amd64.tar.gz \
- && chown postgres:postgres /usr/local/bin/node_exporter
+ && chown barman:barman /usr/local/bin/node_exporter
 
-VOLUME ["/pgconf", "/pgdata", "/pgwal"]
+VOLUME ["/pgconf", "/pgbackup"]
 
-EXPOSE 5432
-EXPOSE 9100
+USER barman
 
-USER 26
-
-CMD ["/usr/bin/run-postgresql"]
+CMD ["/usr/bin/run-barman"]

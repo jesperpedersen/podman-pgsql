@@ -1,7 +1,7 @@
 #!/bin/bash
 # The MIT License (MIT)
 #
-# Copyright (c) 2019 Jesper Pedersen <jesper.pedersen@redhat.com>
+# Copyright (c) 2020 Jesper Pedersen <jesper.pedersen@redhat.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the "Software"),
@@ -42,6 +42,15 @@ if [ ! -f /pgdata/PG_VERSION ]; then
         exit 1
     fi
 
+    PGPASSWORD="$PG_REPLICATION_PASSWORD" /usr/pgsql-12/bin/pg_basebackup -S ${PG_SLOT_NAME} -X stream --no-password -c fast -h ${PG_MASTER} -U ${PG_REPLICATION_NAME} -D /pgdata --waldir=/pgwal
+
+    echo "" >> /pgdata/postgresql.conf
+    echo "#" >> /pgdata/postgresql.conf
+    echo "# REPLICATION INFORMATION" >> /pgdata/postgresql.conf
+    echo "#" >> /pgdata/postgresql.conf
+
+    echo -n "primary_conninfo = 'host=${PG_MASTER} port=5432 user=${PG_REPLICATION_NAME} application_name=${PG_SLOT_NAME} password=${PG_REPLICATION_PASSWORD}" >> /pgdata/postgresql.conf
+    
     if [ -f /pgconf/root.crt ] && [ -f /pgconf/postgresql.crt ] && [ -f /pgconf/postgresql.key ]; then
         mkdir ~/.postgresql
         cp /pgconf/root.crt ~/.postgresql
@@ -49,22 +58,18 @@ if [ ! -f /pgdata/PG_VERSION ]; then
         cp /pgconf/postgresql.key ~/.postgresql
         chmod 0600 ~/.postgresql/postgresql.key
 
-        sed -i "s/SSL/ sslmode=verify-ca/g" /conf/recovery.conf
-    else
-        sed -i "s/SSL//g" /conf/recovery.conf
+        echo -n " sslmode=verify-ca" >> /pgdata/postgresql.conf
     fi
 
-    PGPASSWORD="$PG_REPLICATION_PASSWORD" /usr/pgsql-11/bin/pg_basebackup -S ${PG_SLOT_NAME} -X stream --no-password -c fast -h ${PG_MASTER} -U ${PG_REPLICATION_NAME} -D /pgdata --waldir=/pgwal
+    echo "'" >> /pgdata/postgresql.conf
 
-    sed -i "s/PG_MASTER/$PG_MASTER/g" /conf/recovery.conf
-    sed -i "s/PG_REPLICATION_NAME/$PG_REPLICATION_NAME/g" /conf/recovery.conf
-    sed -i "s/PG_REPLICATION_PASSWORD/$PG_REPLICATION_PASSWORD/g" /conf/recovery.conf
-    sed -i "s/PG_SLOT_NAME/$PG_SLOT_NAME/g" /conf/recovery.conf
+    echo "primary_slot_name = '${PG_SLOT_NAME}'" >> /pgdata/postgresql.conf
+    echo "promote_trigger_file = '/pgdata/promote.signal'" >> /pgdata/postgresql.conf
 
-    cp /conf/recovery.conf /pgdata/
+    cp /conf/standby.signal /pgdata/
 fi
 
 /usr/local/bin/node_exporter >> /tmp/node_exporter.log 2>&1 &
 echo $! > $NODE_EXPORTER_PIDFILE
 
-exec /usr/pgsql-11/bin/postgres -D /pgdata/ "$@"
+exec /usr/pgsql-12/bin/postgres -D /pgdata/ "$@"

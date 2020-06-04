@@ -1,3 +1,4 @@
+#!/bin/bash
 # The MIT License (MIT)
 #
 # Copyright (c) 2020 Jesper Pedersen <jesper.pedersen@redhat.com>
@@ -19,8 +20,29 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-IMAGE_NAME = pgsql12-replica-centos8
 
-.PHONY: build
-build:
-	podman build --no-cache -t $(IMAGE_NAME) .
+POSTGRES_EXPORTER_PIDFILE=/tmp/postgres_exporter.pid
+
+function trap_sigterm() {
+    kill -SIGINT $(head -1 $POSTGRES_EXPORTER_PIDFILE)
+}
+
+trap 'trap_sigterm' SIGINT SIGTERM
+
+export PG_SERVER_NAME=${PG_SERVER_NAME}
+export PG_SERVER_PORT=${PG_SERVER_PORT}
+export PG_MONITOR_NAME=${PG_MONITOR_NAME}
+export PG_MONITOR_PASSWORD=${PG_MONITOR_PASSWORD}
+
+if [ -z "${PG_SERVER_NAME}" ] || [ -z "${PG_SERVER_PORT}" ] ||
+   [ -z "${PG_MONITOR_NAME}" ] || [ -z "${PG_MONITOR_PASSWORD}" ]; then
+    echo "PG_SERVER_NAME, PG_SERVER_PORT, PG_MONITOR_NAME and PG_MONITOR_PASSWORD needs to be defined."
+    exit 1
+fi
+
+export DATA_SOURCE_NAME="postgresql://$PG_MONITOR_NAME:$PG_MONITOR_PASSWORD@$PG_SERVER_NAME:$PG_SERVER_PORT/postgres?sslmode=disable"
+
+/usr/local/bin/postgres_exporter >> /tmp/postgres_exporter.log 2>&1 &
+echo $! > $POSTGRES_EXPORTER_PIDFILE
+
+wait

@@ -19,13 +19,13 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# pgsql12-replica-centos8
+# pgsql12-pgadmin4-centos8
 FROM centos:centos8
 
 LABEL maintainer="Jesper Pedersen <jesper.pedersen@redhat.com>"
 
-LABEL summary="PostgreSQL 12 Replica" \
-      description="PostgreSQL 12 Replica"
+LABEL summary="PostgreSQL 12 pgadmin4" \
+      description="PostgreSQL 12 pgadmin4"
 
 # COPY conf/licenses /licenses
 
@@ -36,30 +36,38 @@ RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.
  && rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
  && dnf -y update \
  && dnf -y module disable postgresql \
- && dnf -y install wget \
- && dnf -y install postgresql12 postgresql12-server postgresql12-contrib postgresql12-libs \
+ && dnf -y install gettext hostname openssl procps-ng mod_wsgi mod_ssl \
+ && dnf -y install postgresql12 postgresql12-libs pgadmin4 pgadmin4-web \
  && dnf -y clean all
 
 COPY root/ /
 
-RUN mkdir -p /conf /pgconf /pgdata /pgwal
+RUN mkdir -p /conf /pgconf
 COPY conf/* /conf/
-RUN chown -R postgres:postgres /conf /pgconf /pgdata /pgwal
-RUN chmod 700 /conf /pgconf /pgdata /pgwal
+RUN chmod 700 /conf /pgconf
 
-RUN mkdir -p /usr/local/bin
-RUN cd /tmp \
- && wget https://github.com/prometheus/node_exporter/releases/download/v1.0.0-rc.0/node_exporter-1.0.0-rc.0.linux-amd64.tar.gz \
- && tar xzf node_exporter-1.0.0-rc.0.linux-amd64.tar.gz \
- && mv node_exporter-1.0.0-rc.0.linux-amd64/node_exporter /usr/local/bin/node_exporter \
- && rm -Rf node_exporter-1.0.0-rc.0.linux-amd64 node_exporter-1.0.0-rc.0.linux-amd64.tar.gz \
- && chown postgres:postgres /usr/local/bin/node_exporter
+RUN cp /conf/httpd.conf /etc/httpd/conf/httpd.conf
+RUN rm /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/ssl.conf
 
-VOLUME ["/pgconf", "/pgdata", "/pgwal"]
+RUN mkdir -p /var/lib/pgadmin /var/log/pgadmin
+COPY conf/config_local.py /var/lib/pgadmin
 
-EXPOSE 5432
-EXPOSE 9100
+RUN cp /conf/pgadmin4-http.conf /var/lib/pgadmin/pgadmin4.conf
+RUN ln -sf /var/lib/pgadmin/pgadmin4.conf /etc/httpd/conf.d/pgadmin4.conf
 
-USER 26
+RUN cp /conf/config_local.py /var/lib/pgadmin/config_local.py
+RUN ln -sf /var/lib/pgadmin/config_local.py /usr/lib/python3.6/site-packages/pgadmin4-web/config_local.py
 
-CMD ["/usr/bin/run-postgresql"]
+RUN chown -R 2:0 /conf /pgconf
+RUN chown -R 2:0 /usr/lib/python3.6/site-packages/pgadmin4-web \
+    /var/lib/pgadmin /etc/httpd /run/httpd /var/log/httpd /var/log/pgadmin && \
+    chmod -R g=u /usr/lib/python3.6/site-packages/pgadmin4-web \
+    /var/lib/pgadmin /etc/httpd /run/httpd /var/log/httpd /var/log/pgadmin
+
+EXPOSE 5050
+
+VOLUME ["/pgconf"]
+
+USER 2
+
+CMD ["/usr/bin/run-pgadmin4"]

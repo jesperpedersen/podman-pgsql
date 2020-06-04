@@ -1,3 +1,4 @@
+#!/bin/bash
 # The MIT License (MIT)
 #
 # Copyright (c) 2020 Jesper Pedersen <jesper.pedersen@redhat.com>
@@ -19,8 +20,34 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-IMAGE_NAME = pgsql12-replica-centos8
 
-.PHONY: build
-build:
-	podman build --no-cache -t $(IMAGE_NAME) .
+export PATH=/usr/pgsql-12/bin:$PATH
+
+PGADMIN_DIR='/usr/lib/python3.6/site-packages/pgadmin4-web'
+APACHE_PIDFILE='/tmp/httpd.pid'
+
+function trap_sigterm() {
+    /usr/sbin/httpd -k stop
+    kill -SIGINT $(head -1 $APACHE_PIDFILE)
+}
+
+trap 'trap_sigterm' SIGINT SIGTERM
+
+if [ ! -f /var/lib/pgadmin/pgadmin4.db ]; then
+    export PGADMIN_SETUP_EMAIL=${PGADMIN_SETUP_EMAIL}
+    export PGADMIN_SETUP_PASSWORD=${PGADMIN_SETUP_PASSWORD}
+
+    if [ -z "${PGADMIN_SETUP_EMAIL}" ] ||
+       [ -z "${PGADMIN_SETUP_PASSWORD}" ]; then
+        echo "PGADMIN_SETUP_EMAIL and PGADMIN_SETUP_PASSWORD needs to be defined."
+        exit 1
+    fi
+
+    cd ${PGADMIN_DIR?}
+    python setup.py > /tmp/pgadmin4.stdout 2> /tmp/pgadmin4.stderr
+fi
+
+/usr/sbin/httpd -D FOREGROUND &
+echo $! > $APACHE_PIDFILE
+
+wait
