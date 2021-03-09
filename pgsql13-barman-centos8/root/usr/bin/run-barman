@@ -1,0 +1,68 @@
+#!/bin/bash
+# The MIT License (MIT)
+#
+# Copyright (c) 2021 Jesper Pedersen <jesper.pedersen@redhat.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+
+NODE_EXPORTER_PIDFILE=/tmp/node_exporter.pid
+
+function trap_sigterm() {
+    kill -SIGINT $(head -1 $NODE_EXPORTER_PIDFILE)
+}
+
+trap 'trap_sigterm' SIGINT SIGTERM
+
+export PATH=/usr/pgsql-13/bin:$PATH
+
+if [ ! -f /pgbackup/barman.log ]; then
+    export PG_MASTER=${PG_MASTER}
+    export PG_DATABASE=${PG_DATABASE}
+    export PG_REPLICATION_PASSWORD=${PG_REPLICATION_PASSWORD}
+
+    if [ -z "${PG_MASTER}" ] ||
+       [ -z "${PG_DATABASE}" ] ||
+       [ -z "${PG_REPLICATION_PASSWORD}" ]; then
+        echo "PG_MASTER, PG_DATABASE and PG_REPLICATION_PASSWORD needs to be defined."
+        exit 1
+    fi
+    
+    sed -i "s/PG_MASTER/$PG_MASTER/g" /conf/barman.conf
+    sed -i "s/PG_DATABASE/$PG_DATABASE/g" /conf/barman.conf
+    sed -i "s/PG_REPLICATION_PASSWORD/$PG_REPLICATION_PASSWORD/g" /conf/barman.conf
+
+    cp /conf/barman.conf /etc/barman.conf
+
+    echo "*:*:$PG_DATABASE:barman:$PG_REPLICATION_PASSWORD" > /var/lib/barman/.pgpass
+    chmod 0600 /var/lib/barman/.pgpass
+
+    echo "PATH=/usr/pgsql-13/bin:$PATH" > /var/lib/barman/.bashrc
+    echo "export PATH" >> /var/lib/barman/.bashrc
+
+    (crontab -l ; echo "00 06  *   *   0     /usr/bin/barman backup primary") | crontab -
+
+    barman switch-wal --archive --force primary
+fi
+
+/usr/local/bin/node_exporter >> /tmp/node_exporter.log 2>&1 &
+echo $! > $NODE_EXPORTER_PIDFILE
+
+barman cron
+
+while true; do sleep 1000; done
