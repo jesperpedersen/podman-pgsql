@@ -115,6 +115,8 @@ if [ ! -f /pgdata/PG_VERSION ]; then
     mkdir -p /usr/local/grafana/data/plugins/
     cd /usr/local/grafana/bin/
     ./grafana-cli --pluginsDir /usr/local/grafana/data/plugins/ plugins install grafana-piechart-panel
+
+    cp /conf/datasource.yaml /usr/local/grafana/conf/provisioning/datasources
 fi
 
 /usr/pgsql-13/bin/pg_ctl -D /pgdata/ start
