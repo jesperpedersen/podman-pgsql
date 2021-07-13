@@ -65,22 +65,22 @@ RUN cd /tmp \
  && chown postgres:postgres /usr/local/bin/prometheus-postgresql-adapter
 
 RUN cd /tmp \
- && wget https://github.com/prometheus/prometheus/releases/download/v2.28.0/prometheus-2.28.0.linux-amd64.tar.gz \
+ && wget https://github.com/prometheus/prometheus/releases/download/v2.28.1/prometheus-2.28.1.linux-amd64.tar.gz \
  && mkdir -p /usr/local/ \
  && cd /usr/local \
- && tar xzf /tmp/prometheus-2.28.0.linux-amd64.tar.gz \
- && mv prometheus-2.28.0.linux-amd64 prometheus \
+ && tar xzf /tmp/prometheus-2.28.1.linux-amd64.tar.gz \
+ && mv prometheus-2.28.1.linux-amd64 prometheus \
  && chown -R postgres:postgres prometheus \
- && rm -Rf /tmp/prometheus-2.28.0.linux-amd64.tar.gz
+ && rm -Rf /tmp/prometheus-2.28.1.linux-amd64.tar.gz
 
 RUN cd /tmp \
- && wget https://dl.grafana.com/oss/release/grafana-8.0.3.linux-amd64.tar.gz \
+ && wget https://dl.grafana.com/oss/release/grafana-8.0.5.linux-amd64.tar.gz \
  && mkdir -p /usr/local/ \
  && cd /usr/local \
- && tar xzf /tmp/grafana-8.0.3.linux-amd64.tar.gz \
- && mv grafana-8.0.3 grafana \
+ && tar xzf /tmp/grafana-8.0.5.linux-amd64.tar.gz \
+ && mv grafana-8.0.5 grafana \
  && chown -R postgres:postgres grafana \
- && rm -Rf /tmp/grafana-8.0.3.linux-amd64.tar.gz
+ && rm -Rf /tmp/grafana-8.0.5.linux-amd64.tar.gz
 
 RUN dnf -y remove wget git gcc make tar redhat-rpm-config clang ccache llvm llvm-static \
  && dnf -y clean all
