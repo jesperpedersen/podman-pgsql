@@ -47,10 +47,10 @@ RUN chmod 700 /conf /pgconf /pgagroal
 
 RUN mkdir -p /usr/local/bin
 RUN cd /tmp \
- && wget https://github.com/prometheus/node_exporter/releases/download/v1.1.1/node_exporter-1.1.1.linux-amd64.tar.gz \
- && tar xzf node_exporter-1.1.1.linux-amd64.tar.gz \
- && mv node_exporter-1.1.1.linux-amd64/node_exporter /usr/local/bin/node_exporter \
- && rm -Rf node_exporter-1.1.1.linux-amd64 node_exporter-1.1.1.linux-amd64.tar.gz \
+ && wget https://github.com/prometheus/node_exporter/releases/download/v1.2.1/node_exporter-1.2.1.linux-amd64.tar.gz \
+ && tar xzf node_exporter-1.2.1.linux-amd64.tar.gz \
+ && mv node_exporter-1.2.1.linux-amd64/node_exporter /usr/local/bin/node_exporter \
+ && rm -Rf node_exporter-1.2.1.linux-amd64 node_exporter-1.2.1.linux-amd64.tar.gz \
  && chown pgagroal:pgagroal /usr/local/bin/node_exporter
 
 VOLUME ["/pgconf", "/pgagroal"]

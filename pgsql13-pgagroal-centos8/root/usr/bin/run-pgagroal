@@ -36,17 +36,15 @@ if [ ! -f /pgagroal/pgagroal.conf ]; then
 
     export PG_PRIMARY_NAME=${PG_PRIMARY_NAME}
     export PG_PRIMARY_PORT=${PG_PRIMARY_PORT}
-    export PG_MASTER_PASSWORD=${PG_MASTER_PASSWORD}
     export PG_NETWORK_MASK=${PG_NETWORK_MASK}
     export PG_USER1_NAME=${PG_USER1_NAME}
     export PG_USER1_PASSWORD=${PG_USER1_PASSWORD}
     export PG_USER1_DATABASE=${PG_USER1_DATABASE}
 
     if [ -z "${PG_PRIMARY_NAME}" ] || [ -z "${PG_PRIMARY_PORT}" ] ||
-       [ -z "${PG_MASTER_PASSWORD}" ] ||
        [ -z "${PG_USER1_NAME}" ] || [ -z "${PG_USER1_PASSWORD}" ] || [ -z "${PG_USER1_DATABASE}" ] ||
        [ -z "${PG_NETWORK_MASK}" ]; then
-        echo "PG_PRIMARY_NAME, PG_PRIMARY_PORT, PG_MASTER_PASSWORD, PG_USER1_NAME, PG_USER1_PASSWORD, PG_USER1_DATABASE and PG_NETWORK_MASK needs to be defined."
+        echo "PG_PRIMARY_NAME, PG_PRIMARY_PORT, PG_USER1_NAME, PG_USER1_PASSWORD, PG_USER1_DATABASE and PG_NETWORK_MASK needs to be defined."
         exit 1
     fi
     
@@ -79,7 +77,7 @@ if [ ! -f /pgagroal/pgagroal.conf ]; then
 
     cp /conf/pgagroal.conf /pgagroal
 
-    pgagroal-admin -P ${PG_MASTER_PASSWORD} master-key
+    pgagroal-admin -g master-key
     pgagroal-admin -f /pgagroal/pgagroal_users.conf -U ${PG_USER1_NAME} -P ${PG_USER1_PASSWORD} add-user
 fi
 

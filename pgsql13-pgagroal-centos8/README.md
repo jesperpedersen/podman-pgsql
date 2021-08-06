@@ -28,5 +28,21 @@ podman rm postgresql-pgagroal
 
 | Property | Default | Unit | Required | Description |
 |----------|---------|------|----------|-------------|
-| PG_SERVER_NAME | | | Yes | The IP of the PostgreSQL server |
-| PG_SERVER_PORT | | | Yes | The port of the PostgreSQL server |
+| PG_PRIMARY_NAME | | String | Yes | The IP of the PostgreSQL server |
+| PG_PRIMARY_PORT | | String | Yes | The port of the PostgreSQL server |
+| PG_NETWORK_MASK | | String | Yes | The network mask for access |
+| PG_USER1_NAME | | String | Yes | The user name |
+| PG_USER1_PASSWORD | | String | Yes | The user password |
+| PG_USER1_DATABASE | | String | Yes | The user database |
+| PG_MAX_CONNECTIONS | 100 | Int | No | The maximum number of connections |
+| PG_IDLE_TIMEOUT | 0 | Int | No | The idle timeout setting |
+| PG_VALIDATION | `off` | Bool | No | The validation of connections |
+
+## SSL support
+
+SSL support will be enabled when `/pgconf` contains the files `root.crt`, `server.crt` and `server.key`.
+
+Remember to disable passphase such that the server can boot without a password prompt.
+
+A guide to this can be found [here](https://www.howtoforge.com/postgresql-ssl-certificates).
+Test and production environments should **NOT** be using self-signed certificates.
