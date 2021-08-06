@@ -9,7 +9,7 @@ This project contains the PostgreSQL pgagroal image.
 make build
 
 # Run, and register the container under postgresql-pgagroal
-podman run -p 2345:2345 -p 2346:2346 -p 9104:9100 --name postgresql-pgagroal -d -e PG_PRIMARY_NAME=192.168.1.12 -e PG_PRIMARY_PORT=5432 -e PG_NETWORK_MASK=all -e PG_MASTER_PASSWORD='P0dM@N++' -e PG_USER1_NAME=myuser -e PG_USER1_PASSWORD=mypass -e PG_USER1_DATABASE=mydb pgsql13-pgagroal-centos8
+podman run -p 2345:2345 -p 2346:2346 -p 9104:9100 --name postgresql-pgagroal -d -e PG_PRIMARY_NAME=192.168.1.12 -e PG_PRIMARY_PORT=5432 -e PG_NETWORK_MASK=all -e PG_USER1_NAME=myuser -e PG_USER1_PASSWORD=mypass -e PG_USER1_DATABASE=mydb pgsql13-pgagroal-centos8
 
 # Shell to postgresql-
 podman exec -it postgresql-pgagroal /usr/bin/bash
