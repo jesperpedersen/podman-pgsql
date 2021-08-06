@@ -19,45 +19,46 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# pgsql13-barman-centos8
+# pgsql13-pgmoneta-centos8
 FROM centos:centos8
 
 LABEL maintainer="Jesper Pedersen <jesper.pedersen@redhat.com>"
 
-LABEL summary="PostgreSQL 13 Barman" \
-      description="PostgreSQL 13 Barman"
+LABEL summary="PostgreSQL 13 pgmoneta" \
+      description="PostgreSQL 13 pgmoneta"
 
 # COPY conf/licenses /licenses
-
-ENV PGVERSION="13"
-ENV PGROOT="/usr/pgsql-${PGVERSION}"
 
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
  && rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
 # && dnf -y update \
- && dnf -y module disable postgresql \
  && dnf -y install wget tar \
- && dnf -y install postgresql13 postgresql13-libs barman crontabs \
+ && dnf -y install pgmoneta \
  && dnf -y clean all
+
+RUN useradd -ms /bin/bash pgmoneta
 
 COPY root/ /
 
-RUN mkdir -p /conf /pgconf /pgbackup
+RUN mkdir -p /conf /pgconf /pgmoneta
 COPY conf/* /conf/
-RUN chown barman:barman /etc/barman.conf
-RUN chown -R barman:barman /conf /pgconf /pgbackup
-RUN chmod 700 /conf /pgconf /pgbackup
+RUN chown -R pgmoneta:pgmoneta /conf /pgconf /pgmoneta
+RUN chmod 700 /conf /pgconf /pgmoneta
 
 RUN mkdir -p /usr/local/bin
 RUN cd /tmp \
- && wget https://github.com/prometheus/node_exporter/releases/download/v1.1.1/node_exporter-1.1.1.linux-amd64.tar.gz \
- && tar xzf node_exporter-1.1.1.linux-amd64.tar.gz \
- && mv node_exporter-1.1.1.linux-amd64/node_exporter /usr/local/bin/node_exporter \
- && rm -Rf node_exporter-1.1.1.linux-amd64 node_exporter-1.1.1.linux-amd64.tar.gz \
- && chown barman:barman /usr/local/bin/node_exporter
+ && wget https://github.com/prometheus/node_exporter/releases/download/v1.2.1/node_exporter-1.2.1.linux-amd64.tar.gz \
+ && tar xzf node_exporter-1.2.1.linux-amd64.tar.gz \
+ && mv node_exporter-1.2.1.linux-amd64/node_exporter /usr/local/bin/node_exporter \
+ && rm -Rf node_exporter-1.2.1.linux-amd64 node_exporter-1.2.1.linux-amd64.tar.gz \
+ && chown pgmoneta:pgmoneta /usr/local/bin/node_exporter
 
-VOLUME ["/pgconf", "/pgbackup"]
+VOLUME ["/pgconf", "/pgmoneta"]
 
-USER barman
+EXPOSE 5001
+EXPOSE 9100
 
-CMD ["/usr/bin/run-barman"]
+USER pgmoneta
+WORKDIR /home/pgmoneta
+
+CMD ["/usr/bin/run-pgmoneta"]

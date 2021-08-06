@@ -13,7 +13,7 @@ The images makes use of
 * SSL support
 * `pg_stat_statements` integration
 * Pooling using [pgagroal](https://agroal.github.io/pgagroal/)
-* Backup using [barman](https://www.pgbarman.org/)
+* Backup using [pgmoneta](https://pgmoneta.github.io/)
 * Administration with [pgadmin4](https://www.pgadmin.org/)
 * Monitoring with [Grafana](https://grafana.com/), [Prometheus](https://prometheus.io/) and [TimescaleDB](https://www.timescale.com/)
 * Asynchronous replication, up to 5 slaves

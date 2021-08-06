@@ -9,7 +9,7 @@ This project contains the PostgreSQL Primary image.
 make build
 
 # Run, and register the container under postgresql-primary
-podman run -p 5432:5432 -p 9100:9100 --name postgresql-primary -d -e PG_DATABASE=mydb -e PG_USER_NAME=myuser -e PG_USER_PASSWORD=mypass -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_NETWORK_MASK=all -e PG_MONITOR_NAME=monuser -e PG_MONITOR_PASSWORD=monpass pgsql13-primary-centos8
+podman run -p 5432:5432 -p 9100:9100 --name postgresql-primary -d -e PG_DATABASE=mydb -e PG_USER_NAME=myuser -e PG_USER_PASSWORD=mypass -e PG_REPLICATION_NAME=repl -e PG_REPLICATION_PASSWORD=replpass -e PG_BACKUP_NAME=backupuser -e PG_BACKUP_SLOT=backup -e PG_BACKUP_PASSWORD=backuppass -e PG_NETWORK_MASK=all -e PG_MONITOR_NAME=monuser -e PG_MONITOR_PASSWORD=monpass pgsql13-primary-centos8
 
 # psql to postgresql-primary
 psql -h localhost -p 5432 -U myuser mydb
@@ -39,6 +39,9 @@ podman rm postgresql-primary
 | PG_USER_PASSWORD | | | Yes | The password for the user |
 | PG_REPLICATION_NAME | | | Yes | The replication user |
 | PG_REPLICATION_PASSWORD | | | Yes | The password for the replication user |
+| PG_BACKUP_NAME | | | Yes | The backup user |
+| PG_BACKUP_PASSWORD | | | Yes | The password for the backup user |
+| PG_BACKUP_SLOT | | | Yes | The WAL slot for backup |
 | PG_NETWORK_MASK | | | Yes | The network mask for database access |
 | PG_DATABASE_ENCODING | UTF8 | | | The encoding of the database |
 | PG_MAX_CONNECTIONS | 100 | | | `max_connections` setting |
