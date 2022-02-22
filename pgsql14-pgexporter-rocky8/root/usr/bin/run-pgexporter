@@ -21,28 +21,35 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-POSTGRES_EXPORTER_PIDFILE=/tmp/postgres_exporter.pid
+if [ ! -f /pgexporter/pgexporter.conf ]; then
+    export PG_SERVER_NAME=${PG_SERVER_NAME}
+    export PG_SERVER_PORT=${PG_SERVER_PORT}
+    export PG_MONITOR_NAME=${PG_MONITOR_NAME}
+    export PG_MONITOR_PASSWORD=${PG_MONITOR_PASSWORD}
 
-function trap_sigterm() {
-    kill -SIGINT $(head -1 $POSTGRES_EXPORTER_PIDFILE)
-}
+    if [ -z "${PG_SERVER_NAME}" ] || [ -z "${PG_SERVER_PORT}" ] ||
+       [ -z "${PG_MONITOR_NAME}" ] || [ -z "${PG_MONITOR_PASSWORD}" ]; then
+        echo "PG_SERVER_NAME, PG_SERVER_PORT, PG_MONITOR_NAME, and PG_MONITOR_PASSWORD needs to be defined."
+        exit 1
+    fi
 
-trap 'trap_sigterm' SIGINT SIGTERM
+    sed -i "s/PG_SERVER_NAME/$PG_SERVER_NAME/g" /conf/pgexporter.conf
+    sed -i "s/PG_SERVER_PORT/$PG_SERVER_PORT/g" /conf/pgexporter.conf
+    sed -i "s/PG_MONITOR_NAME/$PG_MONITOR_NAME/g" /conf/pgexporter.conf
 
-export PG_SERVER_NAME=${PG_SERVER_NAME}
-export PG_SERVER_PORT=${PG_SERVER_PORT}
-export PG_MONITOR_NAME=${PG_MONITOR_NAME}
-export PG_MONITOR_PASSWORD=${PG_MONITOR_PASSWORD}
+    if [ -f /pgconf/root.crt ] && [ -f /pgconf/server.crt ] && [ -f /pgconf/server.key ]; then
+        sed -i "s/tls = off/tls = on/g" /conf/pgexporter.conf
 
-if [ -z "${PG_SERVER_NAME}" ] || [ -z "${PG_SERVER_PORT}" ] ||
-   [ -z "${PG_MONITOR_NAME}" ] || [ -z "${PG_MONITOR_PASSWORD}" ]; then
-    echo "PG_SERVER_NAME, PG_SERVER_PORT, PG_MONITOR_NAME and PG_MONITOR_PASSWORD needs to be defined."
-    exit 1
+        cp /pgconf/root.crt /pgexporter
+        cp /pgconf/server.crt /pgexporter
+        cp /pgconf/server.key /pgexporter
+        chmod 0600 /pgexporter/server.key
+    fi
+
+    cp /conf/pgexporter.conf /pgexporter
+
+    pgexporter-admin -g master-key
+    pgexporter-admin -f /pgexporter/pgexporter_users.conf -U ${PG_MONITOR_NAME} -P ${PG_MONITOR_PASSWORD} add-user
 fi
 
-export DATA_SOURCE_NAME="postgresql://$PG_MONITOR_NAME:$PG_MONITOR_PASSWORD@$PG_SERVER_NAME:$PG_SERVER_PORT/postgres?sslmode=disable"
-
-/usr/local/bin/postgres_exporter >> /tmp/postgres_exporter.log 2>&1 &
-echo $! > $POSTGRES_EXPORTER_PIDFILE
-
-wait
+exec pgexporter -c /pgexporter/pgexporter.conf -u /pgexporter/pgexporter_users.conf "$@"

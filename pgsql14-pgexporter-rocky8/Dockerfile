@@ -24,8 +24,8 @@ FROM rockylinux:8
 
 LABEL maintainer="Jesper Pedersen <jesper.pedersen@redhat.com>"
 
-LABEL summary="PostgreSQL 14 postgres_exporter" \
-      description="PostgreSQL 14 postgres_exporter"
+LABEL summary="PostgreSQL 14 pgexporter" \
+      description="PostgreSQL 14 pgexporter"
 
 # COPY conf/licenses /licenses
 
@@ -35,20 +35,19 @@ ENV PGROOT="/usr/pgsql-${PGVERSION}"
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
  && rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
 # && dnf -y update \
- && dnf -y install wget tar \
+ && dnf -y install pgexporter \
  && dnf -y clean all
+
+RUN useradd -ms /bin/bash pgexporter
 
 COPY root/ /
 
-RUN mkdir -p /usr/local/bin
-RUN cd /tmp \
- && wget https://github.com/prometheus-community/postgres_exporter/releases/download/v0.9.0/postgres_exporter-0.9.0.linux-amd64.tar.gz \
- && tar xzf postgres_exporter-0.9.0.linux-amd64.tar.gz \
- && mv postgres_exporter-0.9.0.linux-amd64/postgres_exporter /usr/local/bin/postgres_exporter \
- && rm -Rf postgres_exporter-0.9.0.linux-amd64 postgres_exporter-0.9.0.linux-amd64.tar.gz \
- && chown daemon:daemon /usr/local/bin/postgres_exporter
+RUN mkdir -p /conf /pgconf /pgexporter
+COPY conf/* /conf/
+RUN chown -R pgexporter:pgexporter /conf /pgconf /pgexporter
+RUN chmod 700 /conf /pgconf /pgexporter
 
-EXPOSE 9187
+EXPOSE 3000
 
 USER 2
 

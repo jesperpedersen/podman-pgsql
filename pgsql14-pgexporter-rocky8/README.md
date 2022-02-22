@@ -1,6 +1,6 @@
 # PostgreSQL postgres_exporter
 
-This project contains the PostgreSQL postgres_exporter image.
+This project contains the PostgreSQL pgexporter image.
 
 ## Getting Started
 
@@ -9,7 +9,7 @@ This project contains the PostgreSQL postgres_exporter image.
 make build
 
 # Run, and register the container under postgresql-pgexporter
-podman run -p 9187:9187 --name postgresql-pgexporter -d -e PG_SERVER_NAME=192.168.1.12 -e PG_SERVER_PORT=5432 -e PG_MONITOR_NAME=monuser -e PG_MONITOR_PASSWORD=monpass pgsql14-pgexporter-rocky8
+podman run -p 3000:3000 --name postgresql-pgexporter -d -e PG_SERVER_NAME=192.168.1.12 -e PG_SERVER_PORT=5432 -e PG_MONITOR_NAME=monuser -e PG_MONITOR_PASSWORD=monpass pgsql14-pgexporter-rocky8
 
 # Shell to postgresql-
 podman exec -it postgresql-pgexporter /usr/bin/bash
