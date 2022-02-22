@@ -37,7 +37,7 @@ RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.
 # && dnf -y update \
  && dnf -y module disable postgresql \
  && dnf -y install wget \
- && dnf -y install postgresql14 postgresql14-server postgresql14-contrib postgresql14-libs \
+ && dnf -y install postgresql14 postgresql14-server postgresql14-contrib postgresql14-libs pgexporter_ext_14 \
  && dnf -y clean all
 
 COPY root/ /
