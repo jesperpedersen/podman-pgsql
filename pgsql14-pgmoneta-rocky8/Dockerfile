@@ -31,7 +31,7 @@ LABEL summary="PostgreSQL 14 pgmoneta" \
 
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
  && rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
-# && dnf -y update \
+ && dnf -y update \
  && dnf -y install wget tar \
  && dnf -y install pgmoneta \
  && dnf -y clean all

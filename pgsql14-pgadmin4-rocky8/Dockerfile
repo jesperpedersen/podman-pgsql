@@ -34,7 +34,7 @@ ENV PGROOT="/usr/pgsql-${PGVERSION}"
 
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
  && rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
-# && dnf -y update \
+ && dnf -y update \
  && dnf -y module disable postgresql \
  && dnf -y install gettext hostname openssl procps-ng mod_ssl \
  && dnf -y install postgresql14 postgresql14-libs pgadmin4 pgadmin4-web \
