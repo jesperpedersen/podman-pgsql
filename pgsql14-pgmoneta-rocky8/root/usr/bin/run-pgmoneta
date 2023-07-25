@@ -64,10 +64,10 @@ if [ ! -f /pgmoneta/pgmoneta.conf ]; then
     echo "PATH=/usr/pgsql-14/bin:$PATH" > /home/pgmoneta/.bashrc
     echo "export PATH" >> /home/pgmoneta/.bashrc
 
-    (crontab -l ; echo "00 06  *   *   0     /usr/bin/pgmoneta-cli -c /pgmoneta/pgmoneta.conf backup primary") | crontab -
+    (echo "00 06  *   *   0     /usr/bin/pgmoneta-cli -c /pgmoneta/pgmoneta.conf backup primary") | crontab -
 fi
 
 /usr/local/bin/node_exporter >> /tmp/node_exporter.log 2>&1 &
 echo $! > $NODE_EXPORTER_PIDFILE
 
-exec pgmoneta -c /pgmoneta/pgmoneta.conf -a /pgmoneta/pgmoneta_hba.conf -u /pgmoneta/pgmoneta_users.conf "$@"
+exec pgmoneta -c /pgmoneta/pgmoneta.conf -u /pgmoneta/pgmoneta_users.conf "$@"

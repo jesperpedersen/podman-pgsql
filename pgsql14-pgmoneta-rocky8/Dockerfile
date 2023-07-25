@@ -32,7 +32,9 @@ LABEL summary="PostgreSQL 14 pgmoneta" \
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
  && rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
  && dnf -y update \
- && dnf -y install wget tar \
+ && dnf -y module disable postgresql \
+ && dnf -y install wget tar crontabs \
+ && dnf -y install postgresql14 postgresql14-contrib postgresql14-libs \
  && dnf -y install pgmoneta \
  && dnf -y clean all
 
@@ -47,10 +49,10 @@ RUN chmod 700 /conf /pgconf /pgmoneta
 
 RUN mkdir -p /usr/local/bin
 RUN cd /tmp \
- && wget https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz \
- && tar xzf node_exporter-1.3.1.linux-amd64.tar.gz \
- && mv node_exporter-1.3.1.linux-amd64/node_exporter /usr/local/bin/node_exporter \
- && rm -Rf node_exporter-1.3.1.linux-amd64 node_exporter-1.3.1.linux-amd64.tar.gz \
+ && wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz \
+ && tar xzf node_exporter-1.6.1.linux-amd64.tar.gz \
+ && mv node_exporter-1.6.1.linux-amd64/node_exporter /usr/local/bin/node_exporter \
+ && rm -Rf node_exporter-1.6.1.linux-amd64 node_exporter-1.6.1.linux-amd64.tar.gz \
  && chown pgmoneta:pgmoneta /usr/local/bin/node_exporter
 
 VOLUME ["/pgconf", "/pgmoneta"]

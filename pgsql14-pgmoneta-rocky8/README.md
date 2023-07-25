@@ -9,7 +9,7 @@ This project contains the PostgreSQL pgmoneta image.
 make build
 
 # Run, and register the container under postgresql-pgmoneta
-podman run -p 5001:5001 -p 9102:9100 --name postgresql-pgmoneta -d -e PG_PRIMARY_NAME=192.168.1.12 -e PG_PRIMARY_PORT=5432 -e PG_REPL_NAME=repl -e PG_REPL_PASSWORD=mypass -e PG_WAL_NAME=backup pgsql14-pgmoneta-rocky8
+podman run -p 5001:5001 -p 9102:9100 --name postgresql-pgmoneta -d -e PG_PRIMARY_NAME=192.168.1.12 -e PG_PRIMARY_PORT=5432 -e PG_BACKUP_NAME=backup -e PG_BACKUP_PASSWORD=backuppass -e PG_BACKUP_SLOT=backup pgsql14-pgmoneta-rocky8
 
 # Shell to postgresql-
 podman exec -it postgresql-pgmoneta /usr/bin/bash
@@ -30,8 +30,8 @@ podman rm postgresql-pgmoneta
 |----------|---------|------|----------|-------------|
 | PG_PRIMARY_NAME | | String | Yes | The IP of the PostgreSQL server |
 | PG_PRIMARY_PORT | | String | Yes | The port of the PostgreSQL server |
-| PG_BACKUP_NAME | | String | Yes | The replication user name |
-| PG_BACKUP_PASSWORD | | String | Yes | The replication user password |
+| PG_BACKUP_NAME | | String | Yes | The backup user name |
+| PG_BACKUP_PASSWORD | | String | Yes | The backup user password |
 | PG_BACKUP_SLOT | | String | Yes | The name of the WAL slot |
 
 ## SSL support
