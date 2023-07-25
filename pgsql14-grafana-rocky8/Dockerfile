@@ -36,6 +36,7 @@ RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.
  && rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
  && dnf -y update \
  && dnf -y module disable postgresql \
+ && dnf --enablerepo=powertools -y install perl-IPC-Run \
  && dnf -y install wget git gcc make tar redhat-rpm-config clang ccache llvm llvm-static \
  && dnf -y install postgresql14 postgresql14-server postgresql14-devel postgresql14-contrib postgresql14-libs \
  && dnf -y install timescaledb_14 \
@@ -65,22 +66,22 @@ RUN cd /tmp \
  && chown postgres:postgres /usr/local/bin/prometheus-postgresql-adapter
 
 RUN cd /tmp \
- && wget https://github.com/prometheus/prometheus/releases/download/v2.33.3/prometheus-2.33.3.linux-amd64.tar.gz \
+ && wget https://github.com/prometheus/prometheus/releases/download/v2.46.0/prometheus-2.46.0.linux-amd64.tar.gz \
  && mkdir -p /usr/local/ \
  && cd /usr/local \
- && tar xzf /tmp/prometheus-2.33.3.linux-amd64.tar.gz \
- && mv prometheus-2.33.3.linux-amd64 prometheus \
+ && tar xzf /tmp/prometheus-2.46.0.linux-amd64.tar.gz \
+ && mv prometheus-2.46.0.linux-amd64 prometheus \
  && chown -R postgres:postgres prometheus \
- && rm -Rf /tmp/prometheus-2.33.3.linux-amd64.tar.gz
+ && rm -Rf /tmp/prometheus-2.46.0.linux-amd64.tar.gz
 
 RUN cd /tmp \
- && wget https://dl.grafana.com/oss/release/grafana-8.4.1.linux-amd64.tar.gz \
+ && wget https://dl.grafana.com/oss/release/grafana-10.0.2.linux-amd64.tar.gz \
  && mkdir -p /usr/local/ \
  && cd /usr/local \
- && tar xzf /tmp/grafana-8.4.1.linux-amd64.tar.gz \
- && mv grafana-8.4.1 grafana \
+ && tar xzf /tmp/grafana-10.0.2.linux-amd64.tar.gz \
+ && mv grafana-10.0.2 grafana \
  && chown -R postgres:postgres grafana \
- && rm -Rf /tmp/grafana-8.4.1.linux-amd64.tar.gz
+ && rm -Rf /tmp/grafana-10.0.2.linux-amd64.tar.gz
 
 RUN dnf -y remove wget git gcc make tar redhat-rpm-config clang ccache llvm llvm-static \
  && dnf -y clean all
